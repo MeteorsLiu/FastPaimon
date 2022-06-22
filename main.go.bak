@@ -1,0 +1,13 @@
+package main
+
+import "flag"
+
+var (
+	token = flag.String("token", "", "Config File Path")
+	httpaddr = flag.String("addr", "0.0.0.0:8081", "Http server addr")
+)
+
+func main() {
+	flag.Parse()
+
+}
