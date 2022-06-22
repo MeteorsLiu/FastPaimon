@@ -81,6 +81,7 @@ func getConvert(vid, y2id string) (string, error) {
 
 func GetYoutube(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	vid := ps.ByName("vid")
+	log.Println(r.RemoteAddr)
 	id, err := getY2MateID(vid)
 	if err != nil {
 		w.WriteHeader(http.StatusBadGateway)
