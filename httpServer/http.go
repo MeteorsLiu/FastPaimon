@@ -8,6 +8,7 @@ import (
 	"log"
 	"net/http"
 	"regexp"
+	"strconv"
 	"strings"
 	"time"
 
@@ -96,6 +97,7 @@ func GetYoutube(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	}
 	pr, pw := io.Pipe()
 	//Async Fetch the audio
+	cl := make(chan string)
 	go func() {
 		client := &http.Client{
 			Timeout: 1 * time.Hour,
@@ -114,11 +116,12 @@ func GetYoutube(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 			log.Fatalln(err)
 			return
 		}
-
+		cl <- strconv.FormatInt(resp.ContentLength, 10)
 		defer resp.Body.Close()
 		defer pw.Close()
 		io.Copy(pw, resp.Body)
 	}()
+	w.Header().Set("Content-Length", <-cl)
 	w.Header().Set("Content-Type", "audio/mpeg")
 	io.Copy(w, pr)
 }
