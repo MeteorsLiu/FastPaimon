@@ -118,7 +118,7 @@ func GetYoutube(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 		defer pw.Close()
 		io.Copy(pw, resp.Body)
 	}()
-	w.Header().Add("Content-Type", "audio/mpeg")
+	w.Header().Set("Content-Type", "audio/mpeg")
 	io.Copy(w, pr)
 }
 
