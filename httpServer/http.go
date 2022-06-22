@@ -96,11 +96,11 @@ func GetYoutube(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	pr, pw := io.Pipe()
 	//Async Fetch the audio
 	go func() {
-		_ctx, _cancel := context.WithTimeout(context.Background(), 1*time.Hour)
-		defer _cancel()
-		client := &http.Client{}
+		client := &http.Client{
+			Timeout: 1 * time.Hour,
+		}
 
-		req, err := http.NewRequestWithContext(_ctx, "GET", link, nil)
+		req, err := http.NewRequest("GET", link, nil)
 		if err != nil {
 			log.Fatalln(err)
 			return
