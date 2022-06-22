@@ -22,6 +22,7 @@ func getY2MateID(vid string) (string, error) {
 	if err != nil {
 		return "", err
 	}
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return "", err
@@ -54,6 +55,7 @@ func getConvert(vid, y2id string) (string, error) {
 	if err != nil {
 		return "", err
 	}
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return "", err
@@ -103,7 +105,6 @@ func GetYoutube(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 			log.Fatalln(err)
 			return
 		}
-
 		req.Header.Set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.0.0 Safari/537.36")
 
 		resp, err := client.Do(req)
