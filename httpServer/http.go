@@ -114,12 +114,13 @@ func GetYoutube(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 		req.Header.Set("accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9")
 
 		resp, err := client.Do(req)
-		defer resp.Body.Close()
+
 		if err != nil {
 			log.Println(err)
 			cl <- "0"
 			return
 		}
+		defer resp.Body.Close()
 		cl <- strconv.FormatInt(resp.ContentLength, 10)
 
 		io.Copy(pw, resp.Body)
