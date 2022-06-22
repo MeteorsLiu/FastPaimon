@@ -29,6 +29,7 @@ func getY2MateID(vid string) (string, error) {
 	jsonRet := map[string]interface{}{}
 	defer resp.Body.Close()
 	_body, _ := io.ReadAll(resp.Body)
+	log.Println(string(_body))
 	if err := json.Unmarshal(_body, jsonRet); err != nil {
 		return "", err
 	}
