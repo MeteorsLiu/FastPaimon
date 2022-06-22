@@ -10,7 +10,7 @@ import (
 )
 
 func main() {
-	ctx, cancel := context.WithCancel()
+	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 	go httpServer.New(ctx, "0.0.0.0:8081")
 
