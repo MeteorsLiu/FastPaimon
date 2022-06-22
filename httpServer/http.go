@@ -35,7 +35,7 @@ func getY2MateID(vid string) (string, error) {
 		return "", err
 	}
 	if val, ok := jsonRet["result"]; ok {
-		re := regexp.MustCompile(`k__id\s+=\s+(["'])(.*?)\1`)
+		re := regexp.MustCompile(`k__id\s+=\s+(["'])(.*?)"`)
 		ret := re.Find([]byte(val.(string)))
 		if ret == nil {
 			return "", fmt.Errorf("Cannot Parse URL")
@@ -67,7 +67,7 @@ func getConvert(vid, y2id string) (string, error) {
 		return "", err
 	}
 	if val, ok := jsonRet["result"]; ok {
-		re := regexp.MustCompile(`<a\s+(?:[^>]*?\s+)?href=(["'])(.*?)\1`)
+		re := regexp.MustCompile(`<a\s+(?:[^>]*?\s+)?href=(["'])(.*?)"`)
 		ret := re.Find([]byte(val.(string)))
 		if ret == nil {
 			return "", fmt.Errorf("Cannot Parse URL")
@@ -105,7 +105,8 @@ func GetYoutube(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 			log.Fatalln(err)
 			return
 		}
-		req.Header.Set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.0.0 Safari/537.36")
+		req.Header.Set("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.0.0 Safari/537.36")
+		req.Header.Set("accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9")
 
 		resp, err := client.Do(req)
 		if err != nil {
