@@ -99,29 +99,36 @@ func GetYoutube(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	//Async Fetch the audio
 	cl := make(chan string)
 	go func() {
+		defer pw.Close()
 		client := &http.Client{
 			Timeout: 1 * time.Hour,
 		}
 
 		req, err := http.NewRequest("GET", link, nil)
 		if err != nil {
-			log.Fatalln(err)
+			log.Println(err)
+			cl <- "0"
 			return
 		}
 		req.Header.Set("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.0.0 Safari/537.36")
 		req.Header.Set("accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9")
 
 		resp, err := client.Do(req)
+		defer resp.Body.Close()
 		if err != nil {
-			log.Fatalln(err)
+			log.Println(err)
+			cl <- "0"
 			return
 		}
 		cl <- strconv.FormatInt(resp.ContentLength, 10)
-		defer resp.Body.Close()
-		defer pw.Close()
+
 		io.Copy(pw, resp.Body)
 	}()
-	w.Header().Set("Content-Length", <-cl)
+	_len := <-cl
+	if _len == "0" {
+		return
+	}
+	w.Header().Set("Content-Length", _len)
 	w.Header().Set("Content-Type", "audio/mpeg")
 	io.Copy(w, pr)
 }
